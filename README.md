@@ -1,5 +1,5 @@
 # unity3d-billboard-generator
-A (Designed for foliage) Billboard Generator
+A Billboard Generator with support for multi-bake passes! Built in an afternoon ~
 
 ## Features
 * Generates a simple cross-section billboard for a prefab
