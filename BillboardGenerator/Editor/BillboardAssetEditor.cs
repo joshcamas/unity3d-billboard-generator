@@ -32,12 +32,8 @@ namespace Ardenfall.Utilities
 
             EditorGUI.EndDisabledGroup();
 
-            EditorGUILayout.BeginHorizontal();
-
             if (GUILayout.Button("Force Delete Generated Data"))
                 DestroyChildren(target as BillboardAsset);
-
-            EditorGUILayout.EndHorizontal();
 
         }
 

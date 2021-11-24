@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -13,27 +14,34 @@ namespace Ardenfall.Utilities
         public static void GenerateBillboard(BillboardAsset asset)
         {
             //Destroy textures
-            var allAssets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(asset));
-
-            foreach (var loadedAsset in allAssets)
-            {
-                if (loadedAsset is Texture2D)
-                    GameObject.DestroyImmediate(loadedAsset, true);
-            }
+            foreach(var texture in asset.generatedTextures)
+                GameObject.DestroyImmediate(texture, true);
 
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
             var settings = asset.renderSettings;
             var bakedPassTextures = GenerateBakePasses(asset);
 
             //Save textures
             for (int i = 0; i < bakedPassTextures.Count; i++)
-                AssetDatabase.AddObjectToAsset(bakedPassTextures[i], AssetDatabase.GetAssetPath(asset));
+            {
+                string assetPath = AssetDatabase.GetAssetPath(asset);
+                assetPath = assetPath.Substring(0, assetPath.Length - 6);
+                string texPath = $"{assetPath}_billboard_{i}.png";
 
-            AssetDatabase.SaveAssets();
+                byte[] bytes = bakedPassTextures[i].EncodeToPNG();
+                var dirPath = Application.dataPath + texPath.Substring(6);
+                File.WriteAllBytes(dirPath, bytes);
+                AssetDatabase.Refresh();
+
+                bakedPassTextures[i] = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
+            }
+
+            asset.generatedTextures = new List<Texture2D>(bakedPassTextures);
 
             //Modify saved texture settings for the generated atlases
-            for(int i = 0; i < settings.billboardTextures.Count; i++)
+            for (int i = 0; i < settings.billboardTextures.Count; i++)
             {
                 var textureSettings = settings.billboardTextures[i];
 
@@ -45,7 +53,7 @@ namespace Ardenfall.Utilities
                     importer.alphaIsTransparency = textureSettings.alphaIsTransparency;
                     importer.alphaSource = textureSettings.alphaIsTransparency ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
                     return importer;
-                }, false);
+                });
             }
 
             GetObjectVisual(asset, out Mesh prefabMesh, out Material prefabMaterial);
@@ -56,7 +64,6 @@ namespace Ardenfall.Utilities
             if(asset.generatedMaterial == null)
             {
                 billboardMaterial = new Material(settings.billboardShader);
-                billboardMaterial.name = "Generated Material";
             }
             else
             {
@@ -64,6 +71,7 @@ namespace Ardenfall.Utilities
                 billboardMaterial.shader = settings.billboardShader;
             }
 
+            billboardMaterial.name = $"generatedMaterial_{asset.prefab.name}";
             billboardMaterial.CopyPropertiesFromMaterial(prefabMaterial);
             billboardMaterial.SetFloat("_Cutoff", asset.cutoff);
 
@@ -81,7 +89,7 @@ namespace Ardenfall.Utilities
 
             //Create mesh
             var generatedMesh = BillboardGeneratorUtility.GenerateBillboardMesh(asset, asset.generatedMesh);
-            generatedMesh.name = "Generated Mesh";
+            generatedMesh.name = $"generatedMesh_{asset.prefab.name}";
 
             //Save mesh
             if(asset.generatedMesh == null)
@@ -294,7 +302,7 @@ namespace Ardenfall.Utilities
 
                 textureAtlas.SetPixels(textureAtlasPixels);
                 textureAtlas.Apply();
-                textureAtlas.name = $"Generated Texture - {texture.textureId}";
+                textureAtlas.name = $"generatedTexture_{texture.textureId}_{asset.prefab.name}";
 
                 bakedPassTextures.Add(textureAtlas);
             }
@@ -383,11 +391,14 @@ namespace Ardenfall.Utilities
             return result;
         }
 
-        private static void ModifyTextureImporter(Texture2D texture, Func<TextureImporter, TextureImporter> modify, bool refresh)
+        private static void ModifyTextureImporter(Texture2D texture, Func<TextureImporter, TextureImporter> modify)
         {
             if (null == texture) return;
 
             string assetPath = AssetDatabase.GetAssetPath(texture);
+
+            var importer = AssetImporter.GetAtPath(assetPath);
+
             var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
             if (tImporter != null)
             {

@@ -15,7 +15,10 @@ namespace Ardenfall.Utilities
 
         [Header("LODs")]
         public bool pickLastLOD = true;
-        public int LODIndex = 0; 
+        public int LODIndex = 0;
+
+        [HideInInspector]
+        public List<Texture2D> generatedTextures;
 
         [HideInInspector]
         public Mesh generatedMesh;
