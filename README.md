@@ -21,7 +21,7 @@ A Billboard Generator with support for multi-bake passes! Built in an afternoon 
 
 ## Custom BakePasses
 * Lets create a custom bakepass to use normals in our billboard!
-* Add a new Billboard Texture to your Render Settings. Set the property id to "\_Normals".
+* Add a new Billboard Texture to your Render Settings. Set the property id to "\_Normals", and toggle off Alpha Is Transparency.
 * Add a new Bake Pass. Uncheck "A", since we have no need for the alpha channel (normals can be baked into 3 channels).
 * Create a new shader. This will be your "normal bake pass shader". Here is what mine looks like (I used amplify since I am lazy)
 * Insert this shader in the "Custom Shader" field in your new Bake Pass.
