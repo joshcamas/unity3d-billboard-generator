@@ -12,7 +12,6 @@ A Billboard Generator with support for multi-bake passes! Built in an afternoon 
 * Add a new Billboard Texture. This will be your albedo+alpha texture. 
 * Ensure the Billboard Texture's textureID matches the texture property in your billboard shader
 * Add a new Bake Pass. Keep the values as they are by default. (this pass is using the default shader, so no custom shader needed)
-
 * Create a BillboardAssets via "Create/Ardenfall/Foliage/Billboard Asset"
 * Add your foliage prefab to the Prefab field
 * Add your render settings to the Render Settings field
@@ -25,7 +24,7 @@ A Billboard Generator with support for multi-bake passes! Built in an afternoon 
 * Add a new Bake Pass. Uncheck "A", since we have no need for the alpha channel (normals can be baked into 3 channels).
 * Create a new shader. This will be your "normal bake pass shader". Make your shader output the normals of each fragment. (Literally rendering the normals)
 * Insert this shader in the "Custom Shader" field in your new Bake Pass.
-* To use this normal texture, simply sample the texture "\_Normals" in your billboard. Here's an example:
+* To use this normal texture, simply sample the texture "\_Normals" in your billboard. 
 
 ## Notes
 * When baking a pass, you may want to ensure certain properties of the rendered material is a certain value. You can do this via the Material Overrides field.
