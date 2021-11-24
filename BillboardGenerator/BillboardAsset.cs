@@ -9,6 +9,11 @@ namespace Ardenfall.Utilities
         public GameObject prefab;
         public BillboardRenderSettings renderSettings;
 
+        [Header("Values")]
+        public int textureSize = 512;
+        public float cutoff = 0.15f;
+
+        [Header("LODs")]
         public bool pickLastLOD = true;
         public int LODIndex = 0; 
 

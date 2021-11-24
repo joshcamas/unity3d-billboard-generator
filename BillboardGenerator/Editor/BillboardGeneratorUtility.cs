@@ -65,7 +65,7 @@ namespace Ardenfall.Utilities
             }
 
             billboardMaterial.CopyPropertiesFromMaterial(prefabMaterial);
-            billboardMaterial.SetFloat("_Cutoff", settings.billboardCutoff);
+            billboardMaterial.SetFloat("_Cutoff", asset.cutoff);
 
             for (int i = 0; i < bakedPassTextures.Count; i++)
                 billboardMaterial.SetTexture(settings.billboardTextures[i].textureId, bakedPassTextures[i]);
@@ -265,13 +265,13 @@ namespace Ardenfall.Utilities
             {
                 var format = texture.GetFormat();
 
-                Vector2Int size = BillboardGeneratorUtility.GetAtlasSize(asset, Mathf.FloorToInt(settings.textureSize / 2));
+                Vector2Int size = BillboardGeneratorUtility.GetAtlasSize(asset, Mathf.FloorToInt(asset.textureSize / 2));
                 Texture2D textureAtlas = new Texture2D(size.x, size.y, format, false);
                 var textureAtlasPixels = textureAtlas.GetPixels();
 
                 foreach (var pass in texture.bakePasses)
                 {
-                    var generatedTexture = BillboardGeneratorUtility.RenderAtlas(asset, Mathf.FloorToInt(settings.textureSize / 2), pass.customShader, pass.materialOverrides);
+                    var generatedTexture = BillboardGeneratorUtility.RenderAtlas(asset, Mathf.FloorToInt(asset.textureSize / 2), pass.customShader, pass.materialOverrides);
                     var pixels = generatedTexture.GetPixels();
 
                     for (int i = 0; i < pixels.Length; i++)

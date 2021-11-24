@@ -64,8 +64,6 @@ namespace Ardenfall.Utilities
 
         public List<BillboardTexture> billboardTextures;
         public Shader billboardShader;
-        public float billboardCutoff = 0.15f;
-        public int textureSize = 512;
 
 
     }
