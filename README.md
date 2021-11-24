@@ -4,7 +4,7 @@ A Billboard Generator with support for multi-bake passes! Built in an afternoon 
 ![Foliage Example](https://i.imgur.com/62du8cr.gif)
 
 ## Features
-* Generates a simple cross-section billboard for a prefab
+* Generates a simple cross-section billboard for a prefab (auto picks last LOD of prefab to render if it exists)
 * Support for multiple "bake passes" - allows you to bake other data (masks, normals) that you want to use
 
 ## Simple Tutorial
