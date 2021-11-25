@@ -31,6 +31,3 @@ A Billboard Generator with support for multi-bake passes! Built in an afternoon 
 * There is a builtin "Cutoff" value that is applied to the generated billboard material. This is optional, but if you want to use it the property name must be "\_Cutoff".
 * You don't __Have__ to use multiple bake passes per texture - you could easily pack multiple things (normals and occlusion, for example) into a single RGBA texture in a single bake pass. The multiple bake pass per texture feature is merely for convenience. 
 * There are a few lines dedicated to URP - if you want to use this in builtin/HDRP it will take a little bit of work to port, but I promise it would only take a few minutes.
-
-## Known Issues
-The Power of Two and Alpha settings currently do not work, due to the tool being unable to find texture importers when they are children. I am currently looking into how to solve this.
