@@ -32,9 +32,21 @@ namespace Ardenfall.Utilities
 
                 byte[] bytes = bakedPassTextures[i].EncodeToPNG();
                 var dirPath = Application.dataPath + texPath.Substring(6);
-                File.WriteAllBytes(dirPath, bytes);
-                AssetDatabase.Refresh();
 
+                File.WriteAllBytes(dirPath, bytes);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            for (int i = 0; i < bakedPassTextures.Count; i++)
+            {
+                string assetPath = AssetDatabase.GetAssetPath(asset);
+                assetPath = assetPath.Substring(0, assetPath.Length - 6);
+                string texPath = $"{assetPath}_billboard_{i}.png";
+
+                //Weird unity bug makes this necessary
+                AssetDatabase.ImportAsset(texPath);
                 bakedPassTextures[i] = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
             }
 
@@ -56,15 +68,16 @@ namespace Ardenfall.Utilities
                 });
             }
 
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
             GetObjectVisual(asset, out Mesh prefabMesh, out Material prefabMaterial);
 
             //Create billboard material
             Material billboardMaterial = null;
             
             if(asset.generatedMaterial == null)
-            {
                 billboardMaterial = new Material(settings.billboardShader);
-            }
             else
             {
                 billboardMaterial = asset.generatedMaterial;
@@ -116,7 +129,6 @@ namespace Ardenfall.Utilities
 
             Mesh mesh = existingMesh == null ? new Mesh() : existingMesh;
 
-            //TODO: Fix offset 
             mesh.vertices = new Vector3[] {
                 //Back
                  new Vector3(-extents.x + center.x, -extents.y + center.y, 0),
